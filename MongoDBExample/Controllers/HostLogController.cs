@@ -29,15 +29,19 @@ namespace MongoDBExample.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllHostLog()
         {
-            var query = from host in hostInfoCollection.AsQueryable()
-                        join log in logCollection.AsQueryable() on host.Id equals log.Host into hostLogs
-                        select new
-                        {
-                            HostId = host.Id,
-                            HostName = host.Name,
-                            HostLogs = hostLogs
-                        };
-            var res = query.ToList();
+
+            var res = await Task.Run(() =>
+            {
+                var query = from host in hostInfoCollection.AsQueryable()
+                            join log in logCollection.AsQueryable() on host.Id equals log.Host into hostLogs
+                            select new
+                            {
+                                HostId = host.Id,
+                                HostName = host.Name,
+                                HostLogs = hostLogs
+                            };
+                return query.ToList();
+            });
             return Ok(res);
         }
         private void CheckAndAddDataToDB()
