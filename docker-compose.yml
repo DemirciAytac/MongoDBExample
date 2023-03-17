@@ -1,0 +1,26 @@
+version: '3.4'
+networks:
+  backend:
+
+services:
+  mongodbexample:
+    container_name: order-api
+    image: ${DOCKER_REGISTRY-}mongodbexample
+    build:
+      context: .
+      dockerfile: MongoDBExample/Dockerfile
+    ports:
+      - 18006:80
+    networks: 
+      - backend
+    environment:
+      - DB_HOST=orderdb
+      - DB_NAME=dms_order
+  orderdb:
+    container_name: order-db
+    image: mongo
+    ports:
+      - 18005:27017
+    networks:
+      - backend
+
